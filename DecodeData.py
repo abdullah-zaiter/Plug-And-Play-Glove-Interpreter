@@ -3,6 +3,7 @@ import csv
 import os
 import pickle
 import glob
+import numpy as np
 
 FULL_BUFFER_SIZE = 1902
 OBJECT_SIZE = 36
@@ -57,6 +58,38 @@ def writeObject(obj, filename):
 
 if __name__ == "__main__":
     readings = fromFileToReadingsList(INPUT_FILENAME)
-    writeObject(readings[:int(FULL_BUFFER_SIZE/2)],'1.pkl')
-    writeObject(readings[-int(FULL_BUFFER_SIZE/2):],'2.pkl')
+    
+    input_array = []
+    for reading in readings[:int(FULL_BUFFER_SIZE/2)]:
+        finger = []
+        for i in range(5):
+            finger.append(np.float16(reading.imus[i].accel[0]/255.0))
+            finger.append(np.float16(reading.imus[i].accel[1]/255.0))
+            finger.append(np.float16(reading.imus[i].accel[2]/255.0))
+            finger.append(np.float16(reading.imus[i].gyro[0]/255.0))
+            finger.append(np.float16(reading.imus[i].gyro[1]/255.0))
+            finger.append(np.float16(reading.imus[i].gyro[2]/255.0))
+            pass
+        input_array.append(finger)
+        pass
+    input_array = np.array(input_array)
+    input_array = input_array.reshape((input_array.shape[0], input_array.shape[1], 1))
+    writeObject(input_array,'1.pkl')
+    
+    input_array = []
+    for reading in readings[-int(FULL_BUFFER_SIZE/2):]:
+        finger = []
+        for i in range(5):
+            finger.append(np.float16(reading.imus[i].accel[0]/255.0))
+            finger.append(np.float16(reading.imus[i].accel[1]/255.0))
+            finger.append(np.float16(reading.imus[i].accel[2]/255.0))
+            finger.append(np.float16(reading.imus[i].gyro[0]/255.0))
+            finger.append(np.float16(reading.imus[i].gyro[1]/255.0))
+            finger.append(np.float16(reading.imus[i].gyro[2]/255.0))
+            pass
+        input_array.append(finger)
+        pass
+    input_array = np.array(input_array)
+    input_array = input_array.reshape((input_array.shape[0], input_array.shape[1], 1))   
+    writeObject(input_array,'2.pkl')
     pass
